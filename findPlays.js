@@ -1,4 +1,4 @@
-export function findPlays(combos, yahtzee, counts) {
+export function findPlays(combos, mitzee, counts) {
   var plays = {};
   var key;
 
@@ -86,7 +86,7 @@ export function findPlays(combos, yahtzee, counts) {
     plays['ls'] = 40;
   }
   if (isYahtzee(counts)) {
-    yahtzee ? plays['y'] = 100 : plays['y'] = 50;
+    mitzee ? plays['y'] = 100 : plays['y'] = 50;
   }
   plays['c'] = countChance(counts);
 

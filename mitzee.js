@@ -1,34 +1,26 @@
 import { findPlays } from './findPlays.js';
 import { newCombos, newBoxes } from './initData.js';
 import promptSync from 'prompt-sync';
-var prompt = promptSync();
+const prompt = promptSync();
 
-var p1Combos, p1Boxes, p1Yahtzee, dice, counts, plays;
+var dice, counts, plays;
 
 var playGame = function() {
-  p1Combos = newCombos();
-  p1Boxes = newBoxes();
-  p1Yahtzee = false;
+  var p1Combos = newCombos();
+  var p1Boxes = newBoxes();
+  var p1Mitzee = false;
   var play, i, index;
 
   for (i = 1; i <= 13; i++) {
 
     rollDice(5);
     countDice(dice);
-    plays = findPlays(p1Combos, p1Yahtzee, counts);
-    play = playerTurn(p1Combos, p1Boxes, p1Yahtzee);
+    plays = findPlays(p1Combos, p1Mitzee, counts);
+    play = playerTurn(p1Combos, p1Boxes, p1Mitzee);
 
-    if (play[0] === 'y') {
-      if (!p1Yahtzee) {
-        p1Boxes['y'] = 50;
-        p1Yahtzee = true;
-      } else {
-        if (p1Boxes['yb'] === '_') {
-          p1Boxes['yb'] = 100;
-        } else {
-          p1Boxes['yb'] += 100;
-        }
-      }
+    if (play[0] === 'y' || play[0] === 'yb') {
+      p1Boxes[play[0]] =  play[1];
+      p1Mitzee = true;
 
     } else {
       p1Boxes[play[0]] = play[1];
@@ -36,9 +28,36 @@ var playGame = function() {
       p1Combos.splice(index, 1);
     }
   }
+
+  if (p1Boxes['yb'] === '_') { p1Boxes['yb'] = 0; }
+  scoreGame(p1Boxes);
 };
 
-var playerTurn = function(combos, boxes, yahtzee) {
+var scoreGame = function(boxes) {
+  var key, uSubTotal, uTotal, lTotal, gTotal;
+
+  for (key in boxes) {
+    if (boxes[key] === '_') {
+      boxes[key] = 0;
+    }
+  }
+
+  uSubTotal = boxes[1] + boxes[2] + boxes[3] +
+                  boxes[4] + boxes[5] + boxes[6];
+
+  uSubTotal >= 63 ? uTotal = uSubTotal + 35 : uTotal = uSubTotal;
+
+  lTotal = boxes['3k'] + boxes['4k'] + boxes['fh'] + boxes['ss'] +
+               boxes['ls'] + boxes['y'] + boxes['c'] + boxes['yb'];
+
+  gTotal = uTotal + lTotal;
+
+  console.clear(); console.log(boxes);
+  console.log('Upper Total: ' + uTotal + ' Lower Total: ' + lTotal +
+             ' Grand Total: ' + gTotal);
+}
+
+var playerTurn = function(combos, boxes, mitzee) {
   var holds = [];
   var rolls = 3;
   var input, play;
@@ -68,7 +87,7 @@ var playerTurn = function(combos, boxes, yahtzee) {
       if (rolls > 0) {
         rollDice(dice.length);
         countDice(dice.concat(holds));
-        plays = findPlays(combos, yahtzee, counts);
+        plays = findPlays(combos, mitzee, counts);
         rolls--;
       } else {
         console.log('no more rolls');
@@ -82,7 +101,16 @@ var playerTurn = function(combos, boxes, yahtzee) {
 
     } else if (combos.includes(input)) {
       play = input;
-      return [play, plays[play]];
+
+      if (play === 'y') {
+        if (mitzee) {
+          return ['yb', boxes['yb'] + 100];
+        } else {
+          return ['y', 50];
+        }
+      } else {
+        return [play, plays[play]];
+      }
 
     } else {
       console.log('invalid input');

@@ -3,30 +3,46 @@ var playGame = function() {
   //var p2Combos = newCombos();
   var p1Boxes = newBoxes();
   //var p2Boxes = newBoxes();
+  var p1Yahtzee = false;
 
   for (var i = 1; i <= 13; i++) {
 
     // player 1 turn
     var dice = rollDice(5);
     var counts = countDice(dice);
-    var plays = findPlays(counts, p1Combos);
+    var plays = findPlays(counts, p1Combos, p1Yahtzee);
+    var play = playerTurn(dice, plays, p1Combos, p1Boxes, p1Yahtzee);
 
-    var play = playerTurn(dice, plays, p1Combos, p1Boxes);
-    p1Boxes[play[0]] = play[1];
-    var index = p1Combos.indexOf(play[0]);
-    p1Combos.splice(index, 1);
+    if (play[0] === 'yahtzee') {
+      if (!p1Yahtzee) {
+        p1Boxes['yahtzee'] = 50;
+        p1Yahtzee = true;
+      } else {
+        p1Boxes['yahtzeeBonus'] += 100;
+      }
+
+    } else {
+      p1Boxes[play[0]] = play[1];
+      var index = p1Combos.indexOf(play[0]);
+      p1Combos.splice(index, 1);
+    }
 
     // player 2 turn
 
   }
 };
 
-var playerTurn = function(dice, plays, combos, boxes) {
+var playerTurn = function(dice, plays, combos, boxes, yahtzee) {
   const prompt = require('prompt-sync')();
   var holds = [];
   var rolls = 3;
 
+  dice = [5, 5, 5, 5, 5];
+  var counts = countDice(dice);
+  plays = findPlays(counts, combos, yahtzee);
+
   while (true) {
+
     console.clear();
     console.log('dice:');  console.log(dice);
     console.log('holds:'); console.log(holds);
@@ -60,7 +76,7 @@ var playerTurn = function(dice, plays, combos, boxes) {
       return [play, plays[play]];
 
     } else {
-      console.log('invalid');
+      console.log('invalid input');
     }
   }
 };
@@ -79,7 +95,8 @@ var newBoxes = function() {
     1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
     threeOfAKind: 0, fourOfAKind: 0,
     fullHouse: 0, smallStraight: 0,
-    largeStraight: 0, yahtzee: 0, chance: 0
+    largeStraight: 0, yahtzee: 0, chance: 0,
+    yahtzeeBonus: 0
   };
 };
 
@@ -104,7 +121,7 @@ var countDice = function(dice) {
   return counts;
 }
 
-var findPlays = function(counts, combos) {
+var findPlays = function(counts, combos, yahtzee) {
   var plays = {};
   for (var key in counts) {
     if (counts[key] > 0) {
@@ -125,7 +142,7 @@ var findPlays = function(counts, combos) {
     plays['largeStraight'] = 40;
   }
   if (isYahtzee(counts)) {
-    plays['yahtzee'] = 50;
+    yahtzee ? plays['yahtzee'] = 100 : plays['yahtzee'] = 50;
   }
   plays['chance'] = countChance(counts);
 

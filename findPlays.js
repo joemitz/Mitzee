@@ -73,22 +73,22 @@ export function findPlays(combos, yahtzee, counts) {
     }
   }
   if (isOfKind(counts)[0] === 3) {
-    plays['threeOfAKind'] = isOfKind(counts)[1];
+    plays['3k'] = isOfKind(counts)[1];
   } else if (isOfKind(counts)[0] === 4) {
-    plays['fourOfAKind'] = isOfKind(counts)[1];
+    plays['4k'] = isOfKind(counts)[1];
   }
   if (isFullHouse(counts)) {
-    plays['fullHouse'] = 25;
+    plays['fh'] = 25;
   }
   if (isStraight(counts) === 'small') {
-    plays['smallStraight'] = 30;
+    plays['ss'] = 30;
   } else if (isStraight(counts) === 'large') {
-    plays['largeStraight'] = 40;
+    plays['ls'] = 40;
   }
   if (isYahtzee(counts)) {
-    yahtzee ? plays['yahtzee'] = 100 : plays['yahtzee'] = 50;
+    yahtzee ? plays['y'] = 100 : plays['y'] = 50;
   }
-  plays['chance'] = countChance(counts);
+  plays['c'] = countChance(counts);
 
   for (key in plays) {
     if (!combos.includes(key)) {

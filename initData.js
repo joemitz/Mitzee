@@ -1,18 +1,15 @@
 export function newCombos() {
   return [
     '1', '2', '3', '4', '5', '6',
-    'threeOfAKind', 'fourOfAKind',
-    'fullHouse', 'smallStraight',
-    'largeStraight', 'yahtzee', 'chance'
+    '3k', '4k', 'fh', 'ss',
+    'ls', 'y', 'c'
   ]
 };
 
 export function newBoxes() {
   return {
-    1: 'empty', 2: 'empty', 3: 'empty', 4: 'empty', 5: 'empty', 6: 'empty',
-    threeOfAKind: 'empty', fourOfAKind: 'empty',
-    fullHouse: 'empty', smallStraight: 'empty',
-    largeStraight: 'empty', yahtzee: 'empty', chance: 'empty',
-    yahtzeeBonus: 'empty'
+    1: '_', 2: '_', 3: '_', 4: '_', 5: '_', 6: '_',
+    '3k': '_', '4k': '_', 'fh': '_', 'ss': '_',
+    'ls': '_', 'y': '_', 'c': '_', 'yb': '_'
   };
 };

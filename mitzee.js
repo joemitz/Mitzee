@@ -18,12 +18,16 @@ var playGame = function() {
     plays = findPlays(p1Combos, p1Yahtzee, counts);
     play = playerTurn(p1Combos, p1Boxes, p1Yahtzee);
 
-    if (play[0] === 'yahtzee') {
+    if (play[0] === 'y') {
       if (!p1Yahtzee) {
-        p1Boxes['yahtzee'] = 50;
+        p1Boxes['y'] = 50;
         p1Yahtzee = true;
       } else {
-        p1Boxes['yahtzeeBonus'] += 100;
+        if (p1Boxes['yb'] === '_') {
+          p1Boxes['yb'] = 100;
+        } else {
+          p1Boxes['yb'] += 100;
+        }
       }
 
     } else {
@@ -37,7 +41,7 @@ var playGame = function() {
 var playerTurn = function(combos, boxes, yahtzee) {
   var holds = [];
   var rolls = 3;
-  var input, hold, play;
+  var input, play;
 
   while (true) {
 
@@ -48,12 +52,17 @@ var playerTurn = function(combos, boxes, yahtzee) {
     console.log('plays:'); console.log(plays);
     console.log('boxes:'); console.log(boxes);
 
-    input = prompt('type h to hold, r to roll, n for none, or type play: ');
+    input = prompt('type h to hold, u to unhold, r to roll, n for none, or choose play: ');
 
     if (input === 'h') {
       input = prompt('which die to hold? ');
       holds.push(dice[input - 1]);
       dice.splice(input - 1, 1);
+
+    } else if (input === 'u') {
+      input = prompt('which die to unhold? ');
+      dice.push(holds[input - 1]);
+      holds.splice(input - 1, 1);
 
     } else if (input === 'r') {
       if (rolls > 0) {

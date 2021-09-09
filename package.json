@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "jquery": "^3.6.0",
-    "npm": "^7.22.0",
-    "prompt-sync": "^4.2.0"
-  },
-  "type": "module"
-}

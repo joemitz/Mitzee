@@ -1,4 +1,4 @@
-export function findPlays(combos, mitzee, counts) {
+var findPlays = function(combos, mitzee) {
   var plays = {};
   var key;
 

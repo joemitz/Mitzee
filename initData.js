@@ -1,4 +1,4 @@
-export function newCombos() {
+var newCombos = function() {
   return [
     '1', '2', '3', '4', '5', '6',
     '3k', '4k', 'fh', 'ss',
@@ -6,7 +6,7 @@ export function newCombos() {
   ]
 };
 
-export function newBoxes() {
+var newBoxes = function() {
   return {
     1: '_', 2: '_', 3: '_', 4: '_', 5: '_', 6: '_',
     '3k': '_', '4k': '_', 'fh': '_', 'ss': '_',

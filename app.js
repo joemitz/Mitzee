@@ -145,6 +145,18 @@ $(document).ready(function() {
 
       var renderGame = function() {
 
+        var removeElements = function() {
+          $(".dice").remove();
+          $(".holds").remove();
+          $("#br1").remove();
+          $("#br2").remove();
+          $("#br3").remove();
+          $("#reroll").remove();
+          $("#rolls").remove();
+          $("#plays").remove();
+          $("#boxes").remove();
+        }
+
         var renderDice = function() {
           for (var i = 0; i < dice.length; i++) {
             var $die = $('<span class="dice" id="d' + i + '"></span>');
@@ -178,7 +190,7 @@ $(document).ready(function() {
           $plays.appendTo($app);
 
           for (var key in plays) {
-            var $play = $('<div class="play"></div>');
+            var $play = $('<div class="play" id="' + key + '"></div>');
             $play.text(key + ' | ' + plays[key]);
             $play.appendTo($plays);
           }
@@ -198,20 +210,37 @@ $(document).ready(function() {
           }
         }
 
-        $(".dice").remove();
-        $(".holds").remove();
-        $("#br1").remove();
-        $("#br2").remove();
-        $("#br3").remove();
-        $("#reroll").remove();
-        $("#rolls").remove();
-        $("#plays").remove();
-        $("#boxes").remove();
-
+        removeElements();
         renderDice();
         renderRolls();
         renderPlays();
         renderBoxes();
+
+        $(".play").click(function() {
+
+            turns--;
+
+            var id = $(this).attr('id');
+
+            if (id !== 'y') {
+              boxes[id] = plays[id];
+              var index = combos.indexOf(id);
+              combos.splice(index, 1);
+            } else if (!mitzee) {
+              mitzee = true;
+              boxes[id] = plays[id];
+            } else {
+              boxes['yb'] += 100;
+            }
+
+            holds = [];
+            rolls = 100;
+            dice = rollDice(5);
+            plays = findPlays(combos, mitzee, dice);
+
+            renderGame();
+            // if (turns === 0) ...
+        });
 
         $("#reroll").click(function() {
           if (rolls > 0) {
@@ -240,45 +269,15 @@ $(document).ready(function() {
         });
       }
 
+      var turns = 13;
       var holds = [];
-      var rolls = 3;
-      var play, hand, dice, plays;
+      var rolls = 100;
+      var hand, dice, plays;
 
       dice = rollDice(5);
-      hand = dice;
-      plays = findPlays(combos, mitzee, hand);
+      plays = findPlays(combos, mitzee, dice);
 
       renderGame();
-
-      /*while (true) {}
-        } else if (input === 'r') {
-          if (rolls > 0) {
-            rollDice(dice.length);
-            hand = dice.concat(holds);
-            plays = findPlays(combos, mitzee, hand);
-            rolls--;
-          } else {
-            console.log('no more rolls');
-          }
-        } else if (input === 'n') {
-          if (combos.includes(input)) {
-            return [input, 0];
-          }
-        } else if (combos.includes(input)) {
-          play = input;
-          if (play === 'y') {
-            if (mitzee) {
-              return ['yb', boxes['yb'] + 100];
-            } else {
-              return ['y', 50];
-            }
-          } else {
-            return [play, plays[play]];
-          }
-        } else {
-          console.log('invalid input');
-        }
-        */
     };
 
     var scoreGame = function(boxes) {
@@ -311,17 +310,6 @@ $(document).ready(function() {
 
     var play = playerTurn(p1Combos, p1Boxes, p1Mitzee);
 
-    /*for (var i = 1; i <= 13; i++) {
-      play = playerTurn(p1Combos, p1Boxes, p1Mitzee);
-      if (play[0] === 'y' || play[0] === 'yb') {
-        p1Boxes[play[0]] =  play[1];
-        p1Mitzee = true;
-      } else {
-        p1Boxes[play[0]] = play[1];
-        var index = p1Combos.indexOf(play[0]);
-        p1Combos.splice(index, 1);
-      }
-    }*/
   };
   var $app = $('#app');
   playGame();

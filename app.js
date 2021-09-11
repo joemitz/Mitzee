@@ -182,43 +182,42 @@ $(document).ready(function() {
           $rolls.appendTo($app);
         }
 
-        var renderPlays = function() {
-          var $lb2 = $('<br id="br2">');
-          $lb2.appendTo($app);
-
-          var $plays = $('<div id="plays"></div>');
-          $plays.appendTo($app);
-
-          for (var key in plays) {
-            var $play = $('<div class="play" id="' + key + '"></div>');
-            $play.text(key + ' | ' + plays[key]);
-            $play.appendTo($plays);
-          }
-        }
-
         var renderBoxes = function() {
+          if (jQuery.isEmptyObject(plays) && rolls === 0) {
+            for (var key in boxes) {
+              if (boxes[key] === '_') {
+                plays[key] = 0;
+              }
+            }
+          }
+
           var $lb3 = $('<br id="br3">');
           $lb3.appendTo($app);
-
           var $boxes = $('<div id="boxes"></div>');
           $boxes.appendTo($app);
 
           for (var key in boxes) {
-            var $box = $('<div class="box"></div>');
-            $box.text(key + ' | ' + boxes[key]);
-            $box.appendTo($boxes);
+            if (Object.keys(plays).includes(key)) {
+              var $play = $('<div class="play" id="' + key + '"></div>');
+              $play.text(key + ' | ' + plays[key]);
+              $play.appendTo($boxes);
+            } else {
+              var $box = $('<div class="box"></div>');
+              $box.text(key + ' | ' + boxes[key]);
+              $box.appendTo($boxes);
+            }
           }
         }
 
         removeElements();
         renderDice();
         renderRolls();
-        renderPlays();
         renderBoxes();
+        if (turns === 0) {
+          scoreGame(boxes);
+        }
 
         $(".play").click(function() {
-
-            turns--;
 
             var id = $(this).attr('id');
 
@@ -234,10 +233,11 @@ $(document).ready(function() {
             }
 
             holds = [];
-            rolls = 100;
+            rolls = 3;
             dice = rollDice(5);
             plays = findPlays(combos, mitzee, dice);
 
+            turns--;
             renderGame();
             // if (turns === 0) ...
         });
@@ -269,9 +269,12 @@ $(document).ready(function() {
         });
       }
 
+      // FIX SMALL STRAIGHT & LARGE STRAIGHT
+      // FIX 3K & 4K
+
       var turns = 13;
       var holds = [];
-      var rolls = 100;
+      var rolls = 3;
       var hand, dice, plays;
 
       dice = rollDice(5);
@@ -281,13 +284,7 @@ $(document).ready(function() {
     };
 
     var scoreGame = function(boxes) {
-      var key, uSubTotal, uTotal, lTotal, gTotal;
-
-      for (key in boxes) {
-        if (boxes[key] === '_') {
-          boxes[key] = 0;
-        }
-      }
+      var uSubTotal, uTotal, lTotal, gTotal;
 
       uSubTotal = boxes[1] + boxes[2] + boxes[3] +
                   boxes[4] + boxes[5] + boxes[6];
@@ -299,9 +296,9 @@ $(document).ready(function() {
 
       gTotal = uTotal + lTotal;
 
-      console.log(boxes);
-      console.log('Upper Total: ' + uTotal + ' Lower Total: ' + lTotal +
-                 ' Grand Total: ' + gTotal);
+      var $score = $('<br><div>Upper Total: ' + uTotal + '<br>Lower Total: ' + lTotal +
+                    '<br>Grand Total: ' + gTotal + '</div>');
+      $score.appendTo($app);
     };
 
     var p1Combos = initData()[0];

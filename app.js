@@ -148,26 +148,71 @@ $(document).ready(function() {
       var renderGame = function() {
 
         var removeElements = function() {
-          $(".dice").remove();
-          $(".holds").remove();
-          $("#br1").remove();
-          $("#br2").remove();
-          $("#br3").remove();
-          $("#reroll").remove();
-          $("#rolls").remove();
-          $("#plays").remove();
-          $("#boxes").remove();
+          $('#board').remove();
+          $('.br').remove();
+          $('.dice').remove();
+          $('.holds').remove();
+          $('#reroll').remove();
+          $('#rolls').remove();
+          $('#plays').remove();
+          $('#boxes').remove();
+        }
+
+        var renderBoard = function() {
+          var $board = $('<canvas id="board" width="300" height="300"></canvas>');
+          $board.appendTo($app);
+
+          var canvas = document.getElementById('board');
+          var ctx = canvas.getContext('2d');
+          ctx.font = '42px serif';
+
+          var minX = 5;
+          var maxX = 271;
+          var minY = 40;
+          var maxY = 293;
+
+          var margin = 15;
+
+          var minX = minX + margin;
+          var maxX = maxX - margin;
+          var minY = minY + margin;
+          var maxY = maxY - margin;
+
+          var positions = [];
+
+          for (var i = minX; i <= maxX; i += (maxX - minX) / 4) {
+            for (var j = minY; j <= maxY; j += (maxY - minY) / 4) {
+              positions.push( [i, j] );
+            }
+          }
+
+          for (var i = 0; i < dice.length; i++) {
+
+            //var x = Math.floor(Math.random() * (maxX - minX) + minX);
+            //var y = Math.floor(Math.random() * (maxY - minY) + minY);
+
+            var rand = positions[ Math.floor(Math.random() * (positions.length - 1)) ];
+            var index = positions.indexOf(rand);
+            positions.splice(index, 2);
+
+            var randX = Math.floor(Math.random() * ((rand[0] + margin) - (rand[0] - margin)) + (rand[0] - margin));
+            var randY = Math.floor(Math.random() * ((rand[1] + margin) - (rand[1] - margin)) + (rand[1] - margin));
+
+            ctx.fillText(dice[i], randX, randY);
+            //ctx.fillRect(randX, randY, 42, 42);
+          }
         }
 
         var renderDice = function() {
+          $('<br class="br">').appendTo('#app');
+
           for (var i = 0; i < dice.length; i++) {
             var $die = $('<span class="dice" id="d' + i + '"></span>');
             $die.text(dice[i]);
             $die.appendTo($app);
           }
 
-          var $lb1 = $('<br id="br1">');
-          $lb1.appendTo($app);
+          $('<br class="br">').appendTo('#app');
 
           for (var i = 0; i < holds.length; i++) {
             var $hold = $('<span class="holds" id="h' + i + '"></span>');
@@ -193,8 +238,6 @@ $(document).ready(function() {
             }
           }
 
-          var $lb3 = $('<br id="br3">');
-          $lb3.appendTo($app);
           var $boxes = $('<div id="boxes"></div>');
           $boxes.appendTo($app);
 
@@ -230,12 +273,12 @@ $(document).ready(function() {
         };
 
         removeElements();
+        renderBoard();
         renderDice();
         renderRolls();
         renderBoxes();
-        if (turns === 0) {
-          renderScore(boxes);
-        }
+
+        if (turns === 0) { renderScore(boxes); }
 
         $(".play").click(function() {
 
@@ -259,7 +302,6 @@ $(document).ready(function() {
 
             turns--;
             renderGame();
-            // if (turns === 0) ...
         });
 
         $("#reroll").click(function() {

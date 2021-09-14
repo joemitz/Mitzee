@@ -57,7 +57,7 @@ $(document).ready(function() {
               }
             }
           }
-          return [highCount, highDice * highCount];
+          return [[highCount - 1, highDice * (highCount - 1)], [highCount, highDice * highCount]];
         };
 
         var isFullHouse = function() {
@@ -117,10 +117,11 @@ $(document).ready(function() {
             plays[key] = counts[key] * key;
           }
         }
-        if (isOfKind(counts)[0] === 3) {
-          plays['3k'] = isOfKind(counts)[1];
-        } else if (isOfKind(counts)[0] === 4) {
-          plays['4k'] = isOfKind(counts)[1];
+        if (isOfKind(counts)[1][0] === 3) {
+          plays['3k'] = isOfKind(counts)[1][1];
+        } else if (isOfKind(counts)[1][0] === 4) {
+          plays['3k'] = isOfKind(counts)[0][1];
+          plays['4k'] = isOfKind(counts)[1][1];
         }
         if (isFullHouse(counts)) {
           plays['fh'] = 25;
@@ -128,6 +129,7 @@ $(document).ready(function() {
         if (isStraight(counts) === 'small') {
           plays['ss'] = 30;
         } else if (isStraight(counts) === 'large') {
+          plays['ss'] = 30;
           plays['ls'] = 40;
         }
         if (isYahtzee(counts)) {
@@ -209,12 +211,30 @@ $(document).ready(function() {
           }
         }
 
+        var renderScore = function(boxes) {
+          var uSubTotal, uTotal, lTotal, gTotal;
+
+          uSubTotal = boxes[1] + boxes[2] + boxes[3] +
+                      boxes[4] + boxes[5] + boxes[6];
+
+          uSubTotal >= 63 ? uTotal = uSubTotal + 35 : uTotal = uSubTotal;
+
+          lTotal = boxes['3k'] + boxes['4k'] + boxes['fh'] + boxes['ss'] +
+                   boxes['ls'] + boxes['y'] + boxes['c'] + boxes['yb'];
+
+          gTotal = uTotal + lTotal;
+
+          var $score = $('<br><div>Upper Total: ' + uTotal + '<br>Lower Total: ' + lTotal +
+                        '<br>Grand Total: ' + gTotal + '</div>');
+          $score.appendTo($app);
+        };
+
         removeElements();
         renderDice();
         renderRolls();
         renderBoxes();
         if (turns === 0) {
-          scoreGame(boxes);
+          renderScore(boxes);
         }
 
         $(".play").click(function() {
@@ -269,9 +289,6 @@ $(document).ready(function() {
         });
       }
 
-      // FIX SMALL STRAIGHT & LARGE STRAIGHT
-      // FIX 3K & 4K
-
       var turns = 13;
       var holds = [];
       var rolls = 3;
@@ -283,29 +300,11 @@ $(document).ready(function() {
       renderGame();
     };
 
-    var scoreGame = function(boxes) {
-      var uSubTotal, uTotal, lTotal, gTotal;
-
-      uSubTotal = boxes[1] + boxes[2] + boxes[3] +
-                  boxes[4] + boxes[5] + boxes[6];
-
-      uSubTotal >= 63 ? uTotal = uSubTotal + 35 : uTotal = uSubTotal;
-
-      lTotal = boxes['3k'] + boxes['4k'] + boxes['fh'] + boxes['ss'] +
-               boxes['ls'] + boxes['y'] + boxes['c'] + boxes['yb'];
-
-      gTotal = uTotal + lTotal;
-
-      var $score = $('<br><div>Upper Total: ' + uTotal + '<br>Lower Total: ' + lTotal +
-                    '<br>Grand Total: ' + gTotal + '</div>');
-      $score.appendTo($app);
-    };
-
     var p1Combos = initData()[0];
     var p1Boxes = initData()[1];
     var p1Mitzee = false;
 
-    var play = playerTurn(p1Combos, p1Boxes, p1Mitzee);
+    playerTurn(p1Combos, p1Boxes, p1Mitzee);
 
   };
   var $app = $('#app');

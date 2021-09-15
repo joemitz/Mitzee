@@ -5,12 +5,25 @@ html, body {
   text-align: center;
 }
 
+img {
+  width: 43px;
+  height: 43px;
+}
+
 .play {
   color: rgb(46, 211, 126);
 }
 
 .dice:hover, .holds:hover, .play:hover, #reroll:hover {
   cursor: pointer;
+}
+
+.hide {
+  display: none;
+}
+
+.canvas-container {
+  margin: 0 auto;
 }
 
 #board {

@@ -148,7 +148,7 @@ $(document).ready(function() {
       var renderGame = function() {
 
         var removeElements = function() {
-          $('#board').remove();
+          $('.canvas-container').remove();
           $('.br').remove();
           $('.dice').remove();
           $('.holds').remove();
@@ -159,19 +159,27 @@ $(document).ready(function() {
         }
 
         var renderBoard = function() {
+
           var $board = $('<canvas id="board" width="300" height="300"></canvas>');
           $board.appendTo($app);
 
-          var canvas = document.getElementById('board');
-          var ctx = canvas.getContext('2d');
-          ctx.font = '42px serif';
+          var canvas = new fabric.Canvas('board');
 
-          var minX = 5;
-          var maxX = 271;
-          var minY = 40;
-          var maxY = 293;
+          canvas.on('mouse:down', function(event){
+            if (event.target) {
+              var i = event.target.name;
+              holds.push(dice[i]);
+              dice.splice(i, 1);
+              renderGame();
+            }
+          });
 
-          var margin = 15;
+          var minX = 3;
+          var maxX = 255;
+          var minY = 0;
+          var maxY = 255;
+
+          var margin = 10;
 
           var minX = minX + margin;
           var maxX = maxX - margin;
@@ -185,21 +193,39 @@ $(document).ready(function() {
               positions.push( [i, j] );
             }
           }
+          setTimeout(function () {
+            for (var i = 0; i < dice.length; i++) {
 
-          for (var i = 0; i < dice.length; i++) {
+              var rand = positions[ Math.floor(Math.random() * (positions.length - 1)) ];
+              var index = positions.indexOf(rand);
+              positions.splice(index, 2);
+              var randX = Math.floor(Math.random() * ((rand[0] + margin) - (rand[0] - margin)) + (rand[0] - margin));
+              var randY = Math.floor(Math.random() * ((rand[1] + margin) - (rand[1] - margin)) + (rand[1] - margin));
 
-            //var x = Math.floor(Math.random() * (maxX - minX) + minX);
-            //var y = Math.floor(Math.random() * (maxY - minY) + minY);
+              var imgElement = document.getElementById(dice[i]);
+              var imgInstance = new fabric.Image(imgElement, {
+                left: randX,
+                top: randY,
+                selectable: true,
+                lockMovementY: true,
+                lockMovementX: true,
+                hasBorders: false,
+                hasControls: false,
+                hoverCursor: 'pointer'
+              });
+              imgInstance.scale(0.1);
+              canvas.add(imgInstance);
+              imgInstance.name = i;
+            }
+          }, 25);
+        }
 
-            var rand = positions[ Math.floor(Math.random() * (positions.length - 1)) ];
-            var index = positions.indexOf(rand);
-            positions.splice(index, 2);
+        var renderHolds = function() {
+          $('<br class="br">').appendTo('#app');
 
-            var randX = Math.floor(Math.random() * ((rand[0] + margin) - (rand[0] - margin)) + (rand[0] - margin));
-            var randY = Math.floor(Math.random() * ((rand[1] + margin) - (rand[1] - margin)) + (rand[1] - margin));
-
-            ctx.fillText(dice[i], randX, randY);
-            //ctx.fillRect(randX, randY, 42, 42);
+          for (var i = 0; i < holds.length; i++) {
+            var $hold = $('<img class="holds" id="h' + i + '" src="img/' + holds[i] + '.png"></img>');
+            $hold.appendTo($app);
           }
         }
 
@@ -227,6 +253,8 @@ $(document).ready(function() {
 
           var $rolls = $('<div id="rolls">' + rolls + ' rolls left</div>');
           $rolls.appendTo($app);
+
+          $('<br class="br">').appendTo('#app');
         }
 
         var renderBoxes = function() {
@@ -274,7 +302,8 @@ $(document).ready(function() {
 
         removeElements();
         renderBoard();
-        renderDice();
+        renderHolds();
+        //renderDice();
         renderRolls();
         renderBoxes();
 
@@ -296,7 +325,7 @@ $(document).ready(function() {
             }
 
             holds = [];
-            rolls = 3;
+            rolls = 100;
             dice = rollDice(5);
             plays = findPlays(combos, mitzee, dice);
 
@@ -333,7 +362,7 @@ $(document).ready(function() {
 
       var turns = 13;
       var holds = [];
-      var rolls = 3;
+      var rolls = 100;
       var hand, dice, plays;
 
       dice = rollDice(5);

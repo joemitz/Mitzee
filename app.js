@@ -325,7 +325,7 @@ $(document).ready(function() {
             }
 
             holds = [];
-            rolls = 100;
+            rolls = 2;
             dice = rollDice(5);
             plays = findPlays(combos, mitzee, dice);
 
@@ -362,7 +362,7 @@ $(document).ready(function() {
 
       var turns = 13;
       var holds = [];
-      var rolls = 100;
+      var rolls = 2;
       var hand, dice, plays;
 
       dice = rollDice(5);

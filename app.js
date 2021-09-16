@@ -268,11 +268,25 @@ $(document).ready(function() {
 
         $('<br class="br">').appendTo($holdsContainer);
 
+        var holds = [];
+
         for (var i = 1; i <= 5; i++) {
           if (hand[i].held) {
-            var $hold = $('<img class="holds" id="h' + i + '" src="img/' + hand[i].num + '.png"></img>');
-            $hold.appendTo($holdsContainer);
+            holds.push( $('<img name="' + hand[i].num + '" class="holds" id="h' + i + '" src="img/' + hand[i].num + '.png"></img>') );
           }
+        }
+
+        for (var i = 0; i < holds.length - 1; i++) {
+          if (parseInt(holds[i][0].name) > parseInt(holds[i + 1][0].name)) {
+            var item = holds[i];
+            holds.splice(i, 1);
+            holds.splice(i + 1, 0, item);
+            i = -1;
+          }
+        }
+
+        for (var i = 0; i < holds.length; i++) {
+          holds[i].appendTo($holdsContainer);
         }
 
         $(".holds").click(function() {

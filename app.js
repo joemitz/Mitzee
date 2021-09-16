@@ -206,14 +206,11 @@ $(document).ready(function() {
 
         for (var i = 1; i <= 5; i++) {
 
-          var rand = grid[ Math.floor(Math.random() * (grid.length - 1)) ];
-          grid.splice(grid.indexOf(rand), 2);
+          var randPos = grid[ Math.floor(Math.random() * (grid.length - 1)) ];
+          grid.splice(grid.indexOf(randPos), 2);
 
-          if (!hand[i].held) {
-            hand[i].x = rand[0];
-            hand[i].y = rand[1];
-          }
-
+          hand[i].x = randPos[0];
+          hand[i].y = randPos[1];
           hand[i].angle = Math.floor(Math.random() * 360);
         }
       }
@@ -378,9 +375,10 @@ $(document).ready(function() {
 
         gTotal = uTotal + lTotal;
 
-        var $score = $('<br><div>Upper Total: ' + uTotal + '<br>Lower Total: ' + lTotal +
+        var $score = $('<div>Upper Total: ' + uTotal + '<br>Lower Total: ' + lTotal +
                       '<br>Grand Total: ' + gTotal + '</div>');
-        $score.appendTo($app);
+
+        $score.appendTo($scoreContainer);
       };
 
       generatePositions();
@@ -411,6 +409,7 @@ $(document).ready(function() {
   var $holdsContainer = $('#holds-container');
   var $rollsContainer = $('#rolls-container');
   var $boxesContainer = $('#boxes-container');
+  var $scoreContainer = $('#score-container');
 
   var p1Combos = initData('combos');
   var p1Boxes = initData('boxes');

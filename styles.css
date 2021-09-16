@@ -14,7 +14,7 @@ img {
   color: rgb(46, 211, 126);
 }
 
-.dice:hover, .holds:hover, .play:hover, #reroll:hover {
+.holds:hover, .play:hover, #reroll:hover {
   cursor: pointer;
 }
 

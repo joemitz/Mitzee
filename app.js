@@ -19,31 +19,36 @@ $(document).ready(function() {
           num: 0,
           x: 0,
           y: 0,
-          held: false
+          held: false,
+          angle: 0
         },
         2: {
           num: 0,
           x: 0,
           y: 0,
-          held: false
+          held: false,
+          angle: 0
         },
         3: {
           num: 0,
           x: 0,
           y: 0,
-          held: false
+          held: false,
+          angle: 0
         },
         4: {
           num: 0,
           x: 0,
           y: 0,
-          held: false
+          held: false,
+          angle: 0
         },
         5: {
           num: 0,
           x: 0,
           y: 0,
-          held: false
+          held: false,
+          angle: 0
         }
       };
     }
@@ -181,40 +186,35 @@ $(document).ready(function() {
 
       var generatePositions = function() {
 
-        var renderGrid = function(margin) {
+        var renderGrid = function() {
           var grid = [];
 
-          var minX = 3;
-          var maxX = 255;
-          var minY = 0;
-          var maxY = 255;
-          var minX = minX + margin;
-          var maxX = maxX - margin;
-          var minY = minY + margin;
-          var maxY = maxY - margin;
+          var minX = 75;
+          var maxX = 325;
+          var minY = 75;
+          var maxY = 325;
 
-          for (var i = minX; i <= maxX; i += (maxX - minX) / 4) {
-            for (var j = minY; j <= maxY; j += (maxY - minY) / 4) {
+          for (var i = minX; i <= maxX; i += (maxX - minX) / 2) {
+            for (var j = minY; j <= maxY; j += (maxY - minY) / 2) {
               grid.push( [i, j] );
             }
           }
           return grid;
         }
 
-        var margin = 10;
-        var grid = renderGrid(margin);
+        var grid = renderGrid();
 
         for (var i = 1; i <= 5; i++) {
 
           var rand = grid[ Math.floor(Math.random() * (grid.length - 1)) ];
           grid.splice(grid.indexOf(rand), 2);
-          var randX = Math.floor(Math.random() * ((rand[0] + margin) - (rand[0] - margin)) + (rand[0] - margin));
-          var randY = Math.floor(Math.random() * ((rand[1] + margin) - (rand[1] - margin)) + (rand[1] - margin));
 
           if (!hand[i].held) {
-            hand[i].x = randX;
-            hand[i].y = randY;
+            hand[i].x = rand[0];
+            hand[i].y = rand[1];
           }
+
+          hand[i].angle = Math.floor(Math.random() * 360);
         }
       }
 
@@ -222,7 +222,7 @@ $(document).ready(function() {
 
         $('.canvas-container').remove();
 
-        var $board = $('<canvas id="board" width="300" height="300"></canvas>');
+        var $board = $('<canvas id="board" width="400" height="400"></canvas>');
         $board.appendTo($boardContainer);
         var canvas = new fabric.Canvas('board');
 
@@ -239,7 +239,8 @@ $(document).ready(function() {
                 lockMovementX: true,
                 hasBorders: false,
                 hasControls: false,
-                hoverCursor: 'pointer'
+                hoverCursor: 'pointer',
+                angle: hand[i].angle
               });
               imgInstance.scale(0.1);
               imgInstance.name = i;

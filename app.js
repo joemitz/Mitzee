@@ -294,8 +294,6 @@ $(document).ready(function() {
         var $rolls = $('<div id="rolls">' + rolls + ' rolls left</div>');
         $rolls.appendTo($rollsContainer);
 
-        $('<br class="br">').appendTo('#app');
-
         $("#reroll").click(function() {
           if (rolls > 0) {
             rolls--;

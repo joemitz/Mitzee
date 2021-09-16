@@ -1,31 +1,65 @@
 $(document).ready(function() {
 
-  var initData = function() {
-    return [
-      [
+  var initData = function(type) {
+    if (type === 'combos') {
+      return [
         '1', '2', '3', '4', '5', '6',
         '3k', '4k', 'fh', 'ss',
         'ls', 'y', 'c'
-      ],
-      {
+      ];
+    } else if (type === 'boxes') {
+      return {
         1: '_', 2: '_', 3: '_', 4: '_', 5: '_', 6: '_',
         '3k': '_', '4k': '_', 'fh': '_', 'ss': '_',
         'ls': '_', 'y': '_', 'c': '_', 'yb': 0
-      }
-    ];
+      };
+    } else if (type === 'hand') {
+      return {
+        1: {
+          num: 0,
+          x: 0,
+          y: 0,
+          held: false
+        },
+        2: {
+          num: 0,
+          x: 0,
+          y: 0,
+          held: false
+        },
+        3: {
+          num: 0,
+          x: 0,
+          y: 0,
+          held: false
+        },
+        4: {
+          num: 0,
+          x: 0,
+          y: 0,
+          held: false
+        },
+        5: {
+          num: 0,
+          x: 0,
+          y: 0,
+          held: false
+        }
+      };
+    }
   };
 
   var playGame = function(combos, boxes, mitzee) {
 
     var rollDice = function(num) {
-      var dice = [];
-      for (var i = 0; i < num; i++) {
-        dice.push(Math.floor(Math.random() * 6 + 1));
+      for (var i = 1; i <= 5; i++) {
+        if (!hand[i].held) {
+          hand[i].num = Math.floor(Math.random() * 6 + 1);
+        }
       }
-      return dice;
     };
 
-    var findPlays = function(combos, mitzee, hand) {
+    var findPlays = function(combos, mitzee) {
       var plays = {};
       var key, counts;
 
@@ -34,8 +68,8 @@ $(document).ready(function() {
         counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
         for (i = 1; i < 7; i++) {
           count = 0;
-          for (j = 0; j < hand.length; j++) {
-            if (hand[j] === i) { count++; }
+          for (j = 1; j <= 5; j++) {
+            if (hand[j].num === i) { count++; }
           }
           counts[i] = count;
           count = 0;
@@ -145,10 +179,10 @@ $(document).ready(function() {
 
     var renderGame = function() {
 
-      var renderBoard = function() {
+      var generatePositions = function() {
 
         var renderGrid = function(margin) {
-          var positions = [];
+          var grid = [];
 
           var minX = 3;
           var maxX = 255;
@@ -161,11 +195,30 @@ $(document).ready(function() {
 
           for (var i = minX; i <= maxX; i += (maxX - minX) / 4) {
             for (var j = minY; j <= maxY; j += (maxY - minY) / 4) {
-              positions.push( [i, j] );
+              grid.push( [i, j] );
             }
           }
-          return positions;
+          return grid;
         }
+
+        var margin = 10;
+        var grid = renderGrid(margin);
+
+        for (var i = 1; i <= 5; i++) {
+
+          var rand = grid[ Math.floor(Math.random() * (grid.length - 1)) ];
+          grid.splice(grid.indexOf(rand), 2);
+          var randX = Math.floor(Math.random() * ((rand[0] + margin) - (rand[0] - margin)) + (rand[0] - margin));
+          var randY = Math.floor(Math.random() * ((rand[1] + margin) - (rand[1] - margin)) + (rand[1] - margin));
+
+          if (!hand[i].held) {
+            hand[i].x = randX;
+            hand[i].y = randY;
+          }
+        }
+      }
+
+      var renderBoard = function() {
 
         $('.canvas-container').remove();
 
@@ -173,41 +226,39 @@ $(document).ready(function() {
         $board.appendTo($boardContainer);
         var canvas = new fabric.Canvas('board');
 
-        var margin = 10;
-        var positions = renderGrid(margin);
-
         setTimeout(function () {
-          for (var i = 0; i < dice.length; i++) {
+          for (var i = 1; i <= 5; i++) {
 
-            var rand = positions[ Math.floor(Math.random() * (positions.length - 1)) ];
-            positions.splice(positions.indexOf(rand), 2);
-            var randX = Math.floor(Math.random() * ((rand[0] + margin) - (rand[0] - margin)) + (rand[0] - margin));
-            var randY = Math.floor(Math.random() * ((rand[1] + margin) - (rand[1] - margin)) + (rand[1] - margin));
-
-            var imgElement = document.getElementById(dice[i]);
-            var imgInstance = new fabric.Image(imgElement, {
-              left: randX,
-              top: randY,
-              selectable: true,
-              lockMovementY: true,
-              lockMovementX: true,
-              hasBorders: false,
-              hasControls: false,
-              hoverCursor: 'pointer'
-            });
-            imgInstance.scale(0.1);
-            imgInstance.name = i;
-            canvas.add(imgInstance);
+            if (!hand[i].held) {
+              var imgElement = document.getElementById(hand[i].num);
+              var imgInstance = new fabric.Image(imgElement, {
+                left: hand[i].x,
+                top: hand[i].y,
+                selectable: true,
+                lockMovementY: true,
+                lockMovementX: true,
+                hasBorders: false,
+                hasControls: false,
+                hoverCursor: 'pointer'
+              });
+              imgInstance.scale(0.1);
+              imgInstance.name = i;
+              canvas.add(imgInstance);
+            }
           }
-        }, 25);
+        }, wait);
+
+        if (firstLoad) {
+          firstLoad = false;
+          wait = 0;
+        }
 
         canvas.on('mouse:down', function(event){
           if (event.target) {
             var i = event.target.name;
-            holds.push(dice[i]);
-            dice.splice(i, 1);
-            renderHolds();
+            hand[i].held = true;
             canvas.remove(event.target);
+            renderHolds();
           }
         });
       }
@@ -219,10 +270,19 @@ $(document).ready(function() {
 
         $('<br class="br">').appendTo($holdsContainer);
 
-        for (var i = 0; i < holds.length; i++) {
-          var $hold = $('<img class="holds" id="h' + i + '" src="img/' + holds[i] + '.png"></img>');
-          $hold.appendTo($holdsContainer);
+        for (var i = 1; i <= 5; i++) {
+          if (hand[i].held) {
+            var $hold = $('<img class="holds" id="h' + i + '" src="img/' + hand[i].num + '.png"></img>');
+            $hold.appendTo($holdsContainer);
+          }
         }
+
+        $(".holds").click(function() {
+          var id = $(this).attr('id');
+          hand[id[1]].held = false;
+          renderBoard();
+          renderHolds();
+        });
       }
 
       var renderRolls = function() {
@@ -237,13 +297,25 @@ $(document).ready(function() {
         $rolls.appendTo($rollsContainer);
 
         $('<br class="br">').appendTo('#app');
+
+        $("#reroll").click(function() {
+          if (rolls > 0) {
+            rolls--;
+            rollDice();
+            plays = findPlays(combos, mitzee, hand);
+            generatePositions();
+            renderBoard();
+            renderHolds();
+            renderRolls();
+            renderBoxes();
+          }
+        });
       }
 
       var renderBoxes = function() {
 
         $('#plays').remove();
         $('#boxes').remove();
-
 
         if (jQuery.isEmptyObject(plays) && rolls === 0) {
           for (var key in boxes) {
@@ -267,6 +339,29 @@ $(document).ready(function() {
             $box.appendTo($boxes);
           }
         }
+
+        $(".play").click(function() {
+          var id = $(this).attr('id');
+
+          if (id !== 'y') {
+            boxes[id] = plays[id];
+            var index = combos.indexOf(id);
+            combos.splice(index, 1);
+          } else if (!mitzee) {
+            mitzee = true;
+            boxes[id] = plays[id];
+          } else {
+            boxes['yb'] += 100;
+          }
+
+          holds = [];
+          rolls = 2;
+          hand = initData('hand');
+          rollDice(5);
+          plays = findPlays(combos, mitzee);
+          turns--;
+          renderGame();
+        });
       }
 
       var renderScore = function(boxes) {
@@ -287,101 +382,28 @@ $(document).ready(function() {
         $score.appendTo($app);
       };
 
+      generatePositions();
       renderBoard();
       renderHolds();
       renderRolls();
       renderBoxes();
 
       if (turns === 0) { renderScore(boxes); }
-
-      $(".play").click(function() {
-
-          var id = $(this).attr('id');
-
-          if (id !== 'y') {
-            boxes[id] = plays[id];
-            var index = combos.indexOf(id);
-            combos.splice(index, 1);
-          } else if (!mitzee) {
-            mitzee = true;
-            boxes[id] = plays[id];
-          } else {
-            boxes['yb'] += 100;
-          }
-
-          holds = [];
-          rolls = 2;
-          dice = rollDice(5);
-          plays = findPlays(combos, mitzee, dice);
-
-          turns--;
-          renderGame();
-      });
-
-      $("#reroll").click(function() {
-        if (rolls > 0) {
-          rolls--;
-          dice = rollDice(dice.length);
-          hand = dice.concat(holds);
-          plays = findPlays(combos, mitzee, hand);
-          renderHolds();
-          renderRolls();
-          renderBoxes();
-        }
-      });
-
-      $(".holds").click(function() {
-        var id = $(this).attr('id');
-        dice.push(holds[id[1]]);
-        var index = id[1];
-        holds.splice(index, 1);
-        renderHolds();
-      });
     }
 
     var turns = 13;
-    var holds = [];
     var rolls = 2;
-    var hand, dice, plays;
+    var plays;
+    var hand = initData('hand');
 
-    var hand = {
-      0: {
-        num: 0,
-        x: 0,
-        y: 0,
-        held: false
-      },
-      1: {
-        num: 0,
-        x: 0,
-        y: 0,
-        held: false
-      },
-      2: {
-        num: 0,
-        x: 0,
-        y: 0,
-        held: false
-      },
-      3: {
-        num: 0,
-        x: 0,
-        y: 0,
-        held: false
-      },
-      4: {
-        num: 0,
-        x: 0,
-        y: 0,
-        held: false
-      }
-    }
-
-    dice = rollDice(5);
-    plays = findPlays(combos, mitzee, dice);
+    rollDice(5);
+    plays = findPlays(combos, mitzee);
 
     renderGame();
   };
+
+  var firstLoad = true;
+  var wait = 25;
 
   var $app = $('#app');
   var $boardContainer = $('#board-container');
@@ -389,8 +411,8 @@ $(document).ready(function() {
   var $rollsContainer = $('#rolls-container');
   var $boxesContainer = $('#boxes-container');
 
-  var p1Combos = initData()[0];
-  var p1Boxes = initData()[1];
+  var p1Combos = initData('combos');
+  var p1Boxes = initData('boxes');
   var p1Mitzee = false;
 
   playGame(p1Combos, p1Boxes, p1Mitzee);

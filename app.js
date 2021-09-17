@@ -172,7 +172,9 @@ $(document).ready(function() {
       if (isYahtzee(counts)) {
         mitzee ? plays['y'] = 100 : plays['y'] = 50;
       }
-      plays['c'] = countChance(counts);
+      if (rolled) {
+        plays['c'] = countChance(counts);
+      }
 
       for (key in plays) {
         if (!combos.includes(key)) {
@@ -186,10 +188,9 @@ $(document).ready(function() {
 
       var generatePositions = function() {
 
-        var renderGrid = function() {
-          var grid = [];
+        var grid = [];
 
-          var minX = 75;
+        var minX = 75;
           var maxX = 325;
           var minY = 75;
           var maxY = 325;
@@ -199,10 +200,6 @@ $(document).ready(function() {
               grid.push( [i, j] );
             }
           }
-          return grid;
-        }
-
-        var grid = renderGrid();
 
         for (var i = 1; i <= 5; i++) {
 
@@ -311,6 +308,7 @@ $(document).ready(function() {
         $("#reroll").click(function() {
           if (rolls > 0) {
             rolls--;
+            rolled = true;
             rollDice();
             plays = findPlays(combos, mitzee, hand);
             generatePositions();
@@ -364,10 +362,10 @@ $(document).ready(function() {
             boxes['yb'] += 100;
           }
 
+          rolled = false;
           holds = [];
-          rolls = 2;
+          rolls = 3;
           hand = initData('hand');
-          rollDice(5);
           plays = findPlays(combos, mitzee);
           turns--;
           renderGame();
@@ -390,6 +388,9 @@ $(document).ready(function() {
         var $score = $('<div>Upper Total: ' + uTotal + '<br>Lower Total: ' + lTotal +
                       '<br>Grand Total: ' + gTotal + '</div>');
 
+        $('#reroll').remove();
+        $('#rolls').remove();
+        renderBoxes();
         $score.appendTo($scoreContainer);
       };
 
@@ -399,15 +400,18 @@ $(document).ready(function() {
       renderRolls();
       renderBoxes();
 
-      if (turns === 0) { renderScore(boxes); }
+      if (turns === 0) {
+        rolls = 0;
+        renderScore(boxes);
+      }
     }
 
     var turns = 13;
-    var rolls = 2;
+    var rolls = 3;
     var plays;
     var hand = initData('hand');
+    var rolled = false;
 
-    rollDice(5);
     plays = findPlays(combos, mitzee);
 
     renderGame();

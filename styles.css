@@ -10,20 +10,20 @@ img {
   height: 43px;
 }
 
-.play {
-  color: rgb(46, 211, 126);
-}
-
-.holds:hover, .play:hover, #reroll:hover {
-  cursor: pointer;
-}
-
 .hide {
   display: none;
 }
 
 .canvas-container {
   margin: 0 auto;
+}
+
+.play {
+  color: rgb(46, 211, 126);
+}
+
+.holds:hover, .play:hover, #reroll:hover {
+  cursor: pointer;
 }
 
 #board {

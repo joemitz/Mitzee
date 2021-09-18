@@ -1,13 +1,12 @@
 html, body {
   background-color: rgb(30, 44, 63);
-  color: rgb(83, 169, 215);
+  color: rgb(0, 0, 0);
   font-size: 25px;
   text-align: center;
-}
-
-img {
-  width: 43px;
-  height: 43px;
+  background-image: url("img/wood3.png");
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-position: center;
 }
 
 .hide {
@@ -18,19 +17,37 @@ img {
   margin: 0 auto;
 }
 
-.play {
-  color: rgb(46, 211, 126);
-}
-
-.holds:hover, .play:hover, #reroll:hover {
+.play:hover, .holds:hover, #rollBtn:hover {
   cursor: pointer;
 }
 
-#board {
-  border-color: rgb(83, 169, 215);
-  border-style: solid;
+.play {
+  font-weight: bold;
 }
 
-#reroll {
-  color: rgb(46, 211, 126);
+.play:hover {
+  color:rgb(65, 65, 65);
+}
+
+#board {
+  border-color: rgb(0, 0, 0);
+  border-style: solid;
+  border-radius: 10px;
+  border-width: 3px;
+  background-image: url("img/wood6.png");
+}
+
+#rollBtn {
+  width: 90px;
+  height: 30px;
+  font-size: 20px;
+  line-height: 26px;
+  background-image: url("img/wood3.png");
+  border-style: solid;
+  border-color: rgb(0, 0, 0);
+  border-radius: 5px;
+}
+
+#rollBtn:hover {
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("img/wood3.png");
 }

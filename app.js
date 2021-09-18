@@ -90,7 +90,8 @@ $(document).ready(function() {
             }
           }
         }
-        return [[highCount - 1, highDice * (highCount - 1)], [highCount, highDice * highCount]];
+        return [[highCount - 1, highDice * (highCount - 1)],
+                [highCount, highDice * highCount]];
       };
 
       var isFullHouse = function() {
@@ -184,9 +185,9 @@ $(document).ready(function() {
         var grid = [];
 
         var minX = 75;
-        var maxX = 325;
+        var maxX = 300;
         var minY = 75;
-        var maxY = 325;
+        var maxY = 300;
 
         for (var i = minX; i <= maxX; i += (maxX - minX) / 2) {
           for (var j = minY; j <= maxY; j += (maxY - minY) / 2) {
@@ -206,7 +207,7 @@ $(document).ready(function() {
       var renderBoard = function() {
         $('.canvas-container').remove();
 
-        var $board = $('<canvas id="board" width="400" height="400"></canvas>');
+        var $board = $('<canvas id="board" width="375" height="375"></canvas>');
         $board.appendTo($boardContainer);
         var canvas = new fabric.Canvas('board');
 
@@ -225,7 +226,6 @@ $(document).ready(function() {
               angle: hand[i].angle,
               name: i
             });
-            imgInstance.scale(0.1);
             canvas.add(imgInstance);
           }
         }
@@ -248,7 +248,8 @@ $(document).ready(function() {
 
         for (var i = 1; i <= 5; i++) {
           if (hand[i].held) {
-            holds.push( $('<img name="' + hand[i].num + '" class="holds" id="h' + i + '" src="img/' + hand[i].num + '.png"></img>') );
+            holds.push( $('<img name="' + hand[i].num + '" class="holds" id="h' + i +
+                          '" src="img/' + hand[i].num + '.png"></img>') );
           }
         }
         for (var i = 0; i < holds.length - 1; i++) {
@@ -272,16 +273,16 @@ $(document).ready(function() {
       }
 
       var renderRolls = function() {
-        $('#reroll').remove();
-        $('#rolls').remove();
+        $('#rollBtn').remove();
+        $('#rollsLeft').remove();
 
-        var $reroll = $('<div id="reroll">Roll</div>');
-        $reroll.appendTo($rollsContainer);
+        var $rollBtn = $('<button id="rollBtn">Roll</button>');
+        $rollBtn.appendTo($rollsContainer);
 
-        var $rolls = $('<div id="rolls">' + rolls + ' rolls left</div>');
-        $rolls.appendTo($rollsContainer);
+        var $rollsLeft = $('<div id="rollsLeft">' + rolls + ' rolls left</div>');
+        $rollsLeft.appendTo($rollsContainer);
 
-        $("#reroll").click(function() {
+        $($rollBtn).click(function() {
           if (rolls > 0) {
             rolls--;
             rolled = true;
@@ -297,6 +298,24 @@ $(document).ready(function() {
       }
 
       var renderBoxes = function() {
+
+        var playNames = {
+          1: 'Ones',
+          2: 'Twos',
+          3: 'Threes',
+          4: 'Fours',
+          5: 'Fives',
+          6: 'Sixes',
+          '3k': 'Three of a Kind',
+          '4k': 'Four of a Kind',
+          'fh': 'Full House',
+          'ss': 'Small Straight',
+          'ls': 'Large Straight',
+          'y': 'Mitzee',
+          'c': 'Chance',
+          'yb': 'Mitzee Bonus'
+        }
+
         $('#plays').remove();
         $('#boxes').remove();
 
@@ -313,12 +332,12 @@ $(document).ready(function() {
         for (var key in boxes) {
           if (Object.keys(plays).includes(key)) {
             var $play = $('<div class="play" id="' + key + '"></div>');
-            $play.text(key + ' | ' + plays[key]);
+            $play.text(playNames[key] + ' | ' + plays[key]);
             $play.appendTo($boxes);
 
           } else {
             var $box = $('<div class="box"></div>');
-            $box.text(key + ' | ' + boxes[key]);
+            $box.text(playNames[key] + ' | ' + boxes[key]);
             $box.appendTo($boxes);
           }
         }
@@ -338,7 +357,7 @@ $(document).ready(function() {
 
           turns--;
           rolled = false;
-          rolls = 3;
+          rolls = 100;
           holds = [];
           hand = initData('hand');
           plays = findPlays(combos, mitzee);
@@ -347,6 +366,12 @@ $(document).ready(function() {
       }
 
       var renderScore = function(boxes) {
+        for (var key in boxes) {
+          if (boxes[key] === '_') {
+            boxes[key] = 0;
+          }
+        }
+
         var uSubTotal, uTotal, lTotal, gTotal, $score;
 
         uSubTotal = boxes[1] + boxes[2] + boxes[3] +
@@ -362,8 +387,8 @@ $(document).ready(function() {
         $score = $('<div>Upper Total: ' + uTotal + '<br>Lower Total: ' + lTotal +
                    '<br>Grand Total: ' + gTotal + '</div>');
 
-        $('#reroll').remove();
-        $('#rolls').remove();
+        $('#rollBtn').remove();
+        $('#rollsLeft').remove();
         renderBoxes();
         $score.appendTo($scoreContainer);
       };
@@ -381,7 +406,7 @@ $(document).ready(function() {
     }
 
     var turns = 13;
-    var rolls = 3;
+    var rolls = 100;
     var rolled = false;
     var hand = initData('hand');
     var plays = findPlays(combos, mitzee);

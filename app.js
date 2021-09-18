@@ -332,12 +332,12 @@ $(document).ready(function() {
         for (var key in boxes) {
           if (Object.keys(plays).includes(key)) {
             var $play = $('<div class="play" id="' + key + '"></div>');
-            $play.text(playNames[key] + ' | ' + plays[key]);
+            $play.text(playNames[key]);
             $play.appendTo($boxes);
 
           } else {
             var $box = $('<div class="box"></div>');
-            $box.text(playNames[key] + ' | ' + boxes[key]);
+            $box.text(playNames[key]);
             $box.appendTo($boxes);
           }
         }

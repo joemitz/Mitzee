@@ -4,22 +4,20 @@
 }
 
 html, body {
-  background-color: rgb(30, 44, 63);
   color: rgb(0, 0, 0);
   font-size: 25px;
-  text-align: center;
   background-image: url("img/wood3.png");
   background-repeat: repeat;
   background-attachment: fixed;
   background-position: center;
+  height: 100%;
+  display: grid;
+  align-items: center;
+  justify-content: center;
 }
 
-.hide {
+img.hide {
   display: none;
-}
-
-.canvas-container {
-  margin: 0 auto;
 }
 
 .play:hover, .holds:hover, #rollBtn:hover {
@@ -31,14 +29,58 @@ html, body {
 }
 
 .play:hover {
-  color:rgb(65, 65, 65);
+  color:rgb(81, 81, 81);
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 410px 410px;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "l1 r1"
+    "l2 r1"
+    "l3 r1";
+  justify-items: center;
+}
+
+#board-container {
+  grid-area: l1;
+  height: 390px;
+}
+
+#holds-container {
+  grid-area: l2;
+  height: 50px;
+}
+
+#rolls-container {
+  grid-area: l3;
+  text-align: center;
+}
+
+#boxes-container {
+  grid-area: r1;
+  background-image: url("img/paper.png");
+  background-repeat: no-repeat;
+  background-attachment: local;
+  background-position: top;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  width: 375px;
+  height: 476px;
+  margin: 0 auto;
+}
+
+#score-container {
+  grid-area: r1;
 }
 
 #board {
   border-color: rgb(0, 0, 0);
   border-style: solid;
   border-radius: 10px;
-  border-width: 3px;
+  border-width: 2px;
   background-image: url("img/wood6.png");
 }
 
@@ -57,21 +99,10 @@ html, body {
   background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("img/wood3.png");
 }
 
-#boxes-container {
-  background-image: url("img/paper.png");
-  background-repeat: no-repeat;
-  background-attachment: local;
-  background-position: top;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 5px;
-  width: 375px;
-  height: 476px;
-  margin: 0 auto;
-}
-
 #boxes {
-  margin-top: 0px;
   line-height: 1.28em;
   font-family: 'Anisa';
+  letter-spacing: 3px;
+  margin-right: 120px;
+  text-align: right;
 }

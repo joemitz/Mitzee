@@ -241,8 +241,6 @@ $(document).ready(function() {
 
       var renderHolds = function() {
         $('.holds').remove();
-        $('.br').remove();
-        $('<br class="br">').appendTo($holdsContainer);
 
         var holds = [];
 

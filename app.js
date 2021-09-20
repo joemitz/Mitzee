@@ -343,7 +343,13 @@ $(document).ready(function() {
             $combo.appendTo($combosContainer);
 
             var $comboPoints = $('<div class="combo-points" id="' + key + '"></div>');
-            if (boxes[key] !== '_') { $comboPoints.text(boxes[key]); }
+            if (boxes[key] !== '_' && key !== 'yb') {
+              $comboPoints.text(boxes[key]);
+            } else if (key === 'yb') {
+              if (boxes[key] !== 0) {
+                $comboPoints.text(boxes[key]);
+              }
+            }
             $comboPoints.appendTo($pointsContainer);
           }
         }
@@ -396,6 +402,9 @@ $(document).ready(function() {
         $('#rollBtn').remove();
         $('#rollsLeft').remove();
         renderBoxes();
+        if (boxes['yb'] === 0) {
+          $('#yb').text('0');
+        }
         $score.appendTo($scoreContainer);
       };
 

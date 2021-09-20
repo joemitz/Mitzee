@@ -4,76 +4,36 @@
 }
 
 html, body {
-  color: rgb(0, 0, 0);
-  font-size: 25px;
   background-image: url("img/wood3.png");
   background-repeat: repeat;
   background-attachment: fixed;
   background-position: center;
   height: 100%;
-  display: grid;
-  align-items: center;
+
+  color: rgb(0, 0, 0);
+  font-size: 25px;
+  user-select: none;
+
+  display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 img.hide {
   display: none;
 }
 
-.play:hover, .holds:hover, #rollBtn:hover {
-  cursor: pointer;
-}
-
-.play {
-  font-weight: bold;
-}
-
-.play:hover {
-  color:rgb(81, 81, 81);
+img {
+  height: 42px;
+  width: 42px;
 }
 
 #app {
-  display: grid;
-  grid-template-columns: 410px 410px;
-  grid-template-rows: auto;
-  grid-template-areas:
-    "l1 r1"
-    "l2 r1"
-    "l3 r1";
-  justify-items: center;
-}
-
-#board-container {
-  grid-area: l1;
-  height: 390px;
-}
-
-#holds-container {
-  grid-area: l2;
-  height: 50px;
-}
-
-#rolls-container {
-  grid-area: l3;
-  text-align: center;
-}
-
-#boxes-container {
-  grid-area: r1;
-  background-image: url("img/paper.png");
-  background-repeat: no-repeat;
-  background-attachment: local;
-  background-position: top;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 5px;
-  width: 375px;
-  height: 476px;
-  margin: 0 auto;
-}
-
-#score-container {
-  grid-area: r1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 5px 30px;
+  justify-content: center;
 }
 
 #board {
@@ -84,25 +44,109 @@ img.hide {
   background-image: url("img/wood6.png");
 }
 
+#holds-container {
+  height: 50px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 9px auto 3px auto;
+  width: 220px;
+  background: rgba(100, 45, 0, 0.2);
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.holds {
+  cursor: pointer;
+}
+
+#rolls-container {
+  text-align: center;
+}
+
 #rollBtn {
   width: 90px;
   height: 30px;
+  background: rgba(100, 45, 0, 0.2);
+
   font-size: 20px;
   line-height: 26px;
-  background-image: url("img/wood3.png");
+
   border-style: solid;
   border-color: rgb(0, 0, 0);
+  border-width: 2px;
   border-radius: 5px;
 }
 
 #rollBtn:hover {
-  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("img/wood3.png");
+  background:transparent;
+  cursor: pointer;
 }
 
-#boxes {
-  line-height: 1.28em;
-  font-family: 'Anisa';
-  letter-spacing: 3px;
-  margin-right: 120px;
-  text-align: right;
+#rollsLeft {
+  font-size: 21px;
+}
+
+#boxes-container {
+  background-image: url("img/paper.png");
+  background-repeat: no-repeat;
+  background-attachment: local;
+  background-position: right;
+
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
+
+  width: 300px;
+  height: 438px;
+  margin: 0 auto;
+  padding-top: 5px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  font-family: Anisa;
+  letter-spacing: 2px;
+}
+
+#combos-container {
+  text-align: left;
+}
+
+#points-container {
+  text-align: left;
+  width: 105px;
+  margin-left: 15px;
+}
+
+.combo, .combo-points {
+  height: 1.27em;
+}
+
+.play {
+  height: 1.27em;
+}
+
+@keyframes pulsate {
+  0% {
+      opacity: 0.2;
+  }
+  50% {
+      opacity: 1.0;
+  }
+  100% {
+      opacity: 0.2;
+  }
+}
+
+.play-points {
+  height: 1.27em;
+  cursor: pointer;
+
+  animation: pulsate 1s ease-out;
+  animation-iteration-count: infinite;
+  opacity: 0.5;
 }

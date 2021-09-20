@@ -297,7 +297,7 @@ $(document).ready(function() {
 
       var renderBoxes = function() {
 
-        var playNames = {
+        var comboNames = {
           1: 'Ones',
           2: 'Twos',
           3: 'Threes',
@@ -314,11 +314,10 @@ $(document).ready(function() {
           'yb': 'Mitzee Bonus'
         }
 
-        $('#plays').remove();
-        $('#boxes').remove();
-
-        var $boxes = $('<div id="boxes"></div>');
-        $boxes.appendTo($boxesContainer);
+        $('.combo').remove();
+        $('.play').remove();
+        $('.combo-points').remove();
+        $('.play-points').remove();
 
         if (jQuery.isEmptyObject(plays) && rolls === 0) {
           for (var key in boxes) {
@@ -327,20 +326,29 @@ $(document).ready(function() {
             }
           }
         }
+
         for (var key in boxes) {
           if (Object.keys(plays).includes(key)) {
             var $play = $('<div class="play" id="' + key + '"></div>');
-            $play.text(playNames[key]);
-            $play.appendTo($boxes);
+            $play.text(comboNames[key]);
+            $play.appendTo($combosContainer);
+
+            var $playPoints = $('<div class="play-points" id="' + key + '"></div>');
+            $playPoints.text(plays[key]);
+            $playPoints.appendTo($pointsContainer);
 
           } else {
-            var $box = $('<div class="box"></div>');
-            $box.text(playNames[key]);
-            $box.appendTo($boxes);
+            var $combo = $('<div class="combo"></div>');
+            $combo.text(comboNames[key]);
+            $combo.appendTo($combosContainer);
+
+            var $comboPoints = $('<div class="combo-points" id="' + key + '"></div>');
+            if (boxes[key] !== '_') { $comboPoints.text(boxes[key]); }
+            $comboPoints.appendTo($pointsContainer);
           }
         }
 
-        $(".play").click(function() {
+        $(".play-points").click(function() {
           var id = $(this).attr('id');
 
           if (id !== 'y') {
@@ -355,7 +363,7 @@ $(document).ready(function() {
 
           turns--;
           rolled = false;
-          rolls = 100;
+          rolls = 3;
           holds = [];
           hand = initData('hand');
           plays = findPlays(combos, mitzee);
@@ -404,7 +412,7 @@ $(document).ready(function() {
     }
 
     var turns = 13;
-    var rolls = 100;
+    var rolls = 3;
     var rolled = false;
     var hand = initData('hand');
     var plays = findPlays(combos, mitzee);
@@ -416,6 +424,8 @@ $(document).ready(function() {
   var $holdsContainer = $('#holds-container');
   var $rollsContainer = $('#rolls-container');
   var $boxesContainer = $('#boxes-container');
+  var $combosContainer = $('#combos-container');
+  var $pointsContainer = $('#points-container');
   var $scoreContainer = $('#score-container');
 
   var combos = initData('combos');

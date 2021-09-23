@@ -399,13 +399,46 @@ $(document).ready(function() {
         $score = $('<div>Upper Total: ' + uTotal + '<br>Lower Total: ' + lTotal +
                    '<br>Grand Total: ' + gTotal + '</div>');
 
-        $('#rollBtn').remove();
-        $('#rollsLeft').remove();
-        renderBoxes();
         if (boxes['yb'] === 0) {
           $('#yb').text('0');
         }
-        $score.appendTo($scoreContainer);
+
+        rolls = 0;
+        renderRolls();
+
+        $('.combo').remove();
+        $('.play').remove();
+        $('.combo-points').remove();
+        $('.play-points').remove();
+
+        for (var i = 0; i <= 10; i++) {
+          $('<div class="play"></div>').appendTo($combosContainer);
+          $('<div class="combo-points"></div>').appendTo($pointsContainer);
+        }
+
+        var $play = $('<div class="play"></div>');
+            $play.text('Upper Total');
+            $play.appendTo($combosContainer);
+
+        var $playPoints = $('<div class="combo-points"></div>');
+            $playPoints.text(uTotal.toString());
+            $playPoints.appendTo($pointsContainer);
+
+        var $play = $('<div class="play"></div>');
+            $play.text('Lower Total');
+            $play.appendTo($combosContainer);
+
+        var $playPoints = $('<div class="combo-points"></div>');
+            $playPoints.text(lTotal.toString());
+            $playPoints.appendTo($pointsContainer);
+
+        var $play = $('<div class="play"></div>');
+            $play.text('Grand Total');
+            $play.appendTo($combosContainer);
+
+        var $playPoints = $('<div class="combo-points"></div>');
+            $playPoints.text(gTotal.toString());
+            $playPoints.appendTo($pointsContainer);
       };
 
       generatePositions();
